@@ -18,8 +18,12 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null)
     {
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+            // echo('yes');
+            return redirect(route('trade'));
         }
+        // else{
+        //     echo('no');
+        // }
 
         return $next($request);
     }

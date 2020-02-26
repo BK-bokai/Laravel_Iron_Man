@@ -1,26 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layout.master')
+@section('title',$title)
+@section('content')
+<div class="container">
+    <h1>{{ $title }}</h1>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{$title}}</title>
-</head>
+    <form action="{{route('do_signUp')}}" method="post">
+        {{ csrf_field() }}
+        <label>
+            暱稱:
+            <input type="text" name="nickname" placeholder="暱稱" value="{{ old('nickname') }}" />
+        </label>
+        @error('nickname')
+        <p class="red-text" style='color:red;'> {{ $message }} </p>
+        @enderror
 
-<body>
-    <div class="social">
-        <a href="#">分享到 Facebook</a>
-        <a href="#">分享到 Twitter</a>
-    </div>
+        <label>
+            E-mail:
+            <input type="text" name="email" placeholder="Email" value="{{ old('email') }}" />
+        </label>
+        @error('email')
+        <p class="red-text" style='color:red;'> {{ $message }} </p>
+        @enderror
 
-    E-mail:
-    <input type="text" name="email" placeholder="Email" />
+        <label>
+            密碼:
+            <input type="password" name="password" placeholder="密碼"  />
+        </label>
+        @error('password')
+        <p class="red-text" style='color:red;'> {{ $message }} </p>
+        @enderror
 
-    密碼:
-    <input type="password" name="password" placeholder="密碼" />
+        <label>
+            確認密碼:
+            <input type="password" name="password_confirmation" placeholder="確認密碼" />
+        </label>
+        @error('password_confirmation')
+        <p class="red-text" style='color:red;'> {{ $message }} </p>
+        @enderror
 
-    暱稱:
-    <input type="text" name="nickname" placeholder="暱稱" />
-</body>
+        <label>
+            帳號類型:
+            <select name="type">
+                <option value="G">一般會員</option>
+                <option value="A">管理者</option>
+            </select>
+        </label>
+        @error('type')
+        <p class="red-text" style='color:red;'> {{ $message }} </p>
+        @enderror
 
-</html>
+
+        <button type="submit">註冊</button>
+    </form>
+</div>
+@endsection

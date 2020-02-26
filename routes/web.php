@@ -11,25 +11,25 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 // 首頁
 Route::get('/', 'HomeController@indexPage');
 
 //使用者
-Route::group(['prefix' => 'user', 'namespace' => 'User'], function () {
-    Route::get('/auth/sign-up', 'UserAuthController@signUpPage');
-    Route::post('/auth/sign-up', 'UserAuthController@signUpProcess');
-    Route::get('/auth/sign-in', 'UserAuthController@signInPage');
-    Route::post('/auth/sign-in', 'UserAuthController@signInProcess');
-    Route::get('/auth/sign-out', 'UserAuthController@signOut');
+Route::group(['prefix' => 'user'], function () {
+    Route::get('/sign-up', 'UserAuthController@signUpPage');
+    Route::post('/sign-up', 'UserAuthController@signUpProcess')->name('do_signUp');
+    Route::get('/sign-in', 'UserAuthController@signInPage')->name('signIn');
+    Route::post('/sign-in', 'UserAuthController@signInProcess')->name('do_signIn');
+    Route::get('/sign-out', 'UserAuthController@signOut')->name('signOut');
 });
 
 
 //商品
-Route::group(['prefix' => 'merchandise', 'namespace' => 'backend'], function () {
+Route::group(['prefix' => 'merchandise'], function () {
     Route::get('/', 'MerchandiseController@merchandiseListPage');
     Route::get('/create', 'MerchandiseController@merchandiseCreateProcess');
     Route::get('/manage', 'MerchandiseController@merchandiseManageListPage');
@@ -37,7 +37,7 @@ Route::group(['prefix' => 'merchandise', 'namespace' => 'backend'], function () 
     Route::group(['prefix' => '{merchandise_id}'], function () {
         Route::get('/', 'MerchandiseController@merchandiseItemPage');
         Route::put('/', 'MerchandiseController@merchandiseItemUpdateProcess');
-        Route::get('/edit', 'MerchandiseController@merchandiseEditPage');
+        Route::get('/edit', 'MerchandiseController@merchandiseEditPage')->name('merchandise_edit');
         Route::post('/buy', 'MerchandiseController@merchandiseItemBuyProcess');
     });
 });
@@ -49,4 +49,6 @@ Route::group(['prefix' => 'merchandise', 'namespace' => 'backend'], function () 
 
 
 //交易
-Route::get('/transaction', 'TransactionController@transactionListPage');
+// Route::middleware('auth')->group(function () {
+    Route::get('/transaction', 'TransactionController@transactionListPage')->name('trade');
+// });
