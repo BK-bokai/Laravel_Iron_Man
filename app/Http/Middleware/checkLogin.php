@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use Auth;
+use Illuminate\Support\Facades\Session;
+
 
 class checkLogin
 {
@@ -14,28 +16,15 @@ class checkLogin
      * @param  \Closure  $next
      * @return mixed
      */
-    // public function handle($request, Closure $next, $guard = null)
-    // {
-    //     if (Auth::check()) {
-    //         // $request->is_login = true;
-    //         echo '登入';
-    //     }else{
-    //         // $request->is_login = false;
-    //         echo '登出';
-    //     }
-    //     $request->is_login = 123;
-    //     return $next($request);
-    // }
+
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
-            echo('yes');
-            // return redirect(route('trade'));
+        if (Auth::check()) {
+            Session::put('is_login', True);
         }
         else{
-            echo('no');
+            Session::put('is_login', False);
         }
-
         return $next($request);
     }
 }

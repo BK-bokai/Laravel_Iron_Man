@@ -115,8 +115,9 @@ class UserAuthController extends Controller
 
         if ($user !== null) {
             if (Hash::check($request->password, $user->password)) {
-                if ($this->guard()->attempt(['email' => $request->email, 'password' => $request->password])) {
-                    return redirect(route('trade'));
+                // if ($this->guard()->attempt(['email' => $request->email, 'password' => $request->password])) {
+                if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                        return redirect(route('trade'));
                 }else{
                     return '系統錯誤';
                 }

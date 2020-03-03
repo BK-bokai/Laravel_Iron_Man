@@ -17,11 +17,16 @@
 
 <body>
     <header>
-
-        <a href="{{route('do_signUp')}}">登出</a>
-
+        @php
+        $is_login=Session::get('is_login');
+        @endphp
+        @if ($is_login)
+        <a href="{{route('signOut')}}">登出</a>
+        <a href="{{route('merchandise_create')}}">創建商品</a>
+        @else
         <a href="{{route('do_signUp')}}">註冊</a>
         <a href="{{route('do_signIn')}}">登入</a>
+        @endif
 
     </header>
     <main>
