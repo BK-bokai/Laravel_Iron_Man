@@ -57,7 +57,7 @@ Route::middleware('checkLogin')->group(function () {
                 Route::get('/edit', 'MerchandiseController@merchandiseEditPage')->name('merchandise_edit');
             });
         });
-        Route::group(['prefix' => '{merchandise_id}'], function () {
+        Route::group(['prefix' => '{Merchandise}'], function () {
             Route::get('/', 'MerchandiseController@merchandiseItemPage')->name('merchandise_item');
             Route::post('/buy', 'MerchandiseController@merchandiseItemBuyProcess')->middleware('auth')->name('merchandise_buy');
         });

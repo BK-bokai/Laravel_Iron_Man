@@ -5,9 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Merchandise;
+
+use App\Models\Transaction;
+use Auth;
+use Exception;
+use DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Image;
+use Psy\Readline\Transient;
+
 // use Faker\Provider\Image;
 
 class MerchandiseController extends Controller
@@ -45,10 +52,10 @@ class MerchandiseController extends Controller
 
         return view('merchandise.manageMerchandise', compact('MerchandisePaginate', 'title'));
     }
-    public function merchandiseItemPage(Request $request, $merchandise_id)
+    public function merchandiseItemPage(Request $request, Merchandise $Merchandise)
     {
         $title = "商品頁";
-        $Merchandise = Merchandise::where('id', $merchandise_id)->first();
+        // $Merchandise = Merchandise::where('id', $merchandise_id)->first();
         if (!is_null($Merchandise)) {
             if (!is_null($Merchandise->photo)) {
                 $Merchandise->photo = url($Merchandise->photo);
@@ -56,7 +63,7 @@ class MerchandiseController extends Controller
 
             return view('merchandise.showMerchandise', compact('title', 'Merchandise'));
         }
-        return "你要看的商品ID為$merchandise_id";
+        return "你要看的商品ID為$Merchandise->id";
     }
     public function merchandiseCreateProcess(Request $request)
     {
@@ -169,15 +176,18 @@ class MerchandiseController extends Controller
             //設定圖片檔案相對位置
             $input['photo'] = $file_relative_path;
 
-            $Merchandise->update($input);
-            return redirect(route('merchandise_edit', ['merchandise_id' => $Merchandise->id]));
+            
         }
+        $Merchandise->update($input);
+        return redirect(route('merchandise_edit', ['merchandise_id' => $Merchandise->id]));
     }
 
-    public function merchandiseItemBuyProcess()
+    public function merchandiseItemBuyProcess(Request $request, Merchandise $Merchandise)
     {
         //接收輸入資料
         $input = request()->all();
+        // return $input;
+
         //驗證規則
         $rules = [
             //商品購買數量
@@ -197,6 +207,58 @@ class MerchandiseController extends Controller
                 ->back()
                 ->withErrors($validator)
                 ->withInput();
+        }
+
+
+;
+        try {
+            $user = Auth::user();
+            //交易開始
+            DB::beginTransaction();
+
+            $buy_count = $input['buy_count'];
+            $remain_count_after_buy = $Merchandise->remain_count - $buy_count;
+
+            if ($remain_count_after_buy < 0) {
+                //購買後剩餘數量小於0，不足以賣給使用者
+                throw new Exception('商品數量不足，無法購買');
+            }
+            $Merchandise->remain_count = $remain_count_after_buy;
+            $Merchandise->save();
+            
+            $total_price = $buy_count * $Merchandise->price;
+            $transaction_data = [
+                // 'user_id' => $user->id,
+                'merchandise_id' => $Merchandise->id,
+                'price' => $Merchandise->price,
+                'buy_count' => $buy_count,
+                'total_price' => $total_price,
+            ];
+            $transaction = new Transaction($transaction_data);
+            Auth::user()->Transaction()->save($transaction);
+            // return $transaction_data;
+            // Transaction::create($transaction_data);
+            // return 123;
+            //...中間省略
+            //交易結束
+            DB::commit();
+
+            return redirect(route('merchandise_item',['Merchandise'=>$Merchandise->id]))
+                ->with('status', '已購買成功');
+        } catch (Exception $exception) {
+            //恢復原先交易狀態
+            DB::rollBack();
+
+            //回傳錯誤訊息
+            $error_message = [
+                'msg' => [
+                    $exception->getMessage(),
+                ],
+            ];
+
+            return redirect()
+                ->back()
+                ->with('status', '商品數量不足，無法購買');
         }
 
         var_dump($input);

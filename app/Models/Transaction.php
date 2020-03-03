@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Transaction extends Model
 {
@@ -20,4 +21,25 @@ class Transaction extends Model
         'buy_count',
         'total_price',
     ];
+
+    public function user()
+    {
+        /**
+         * User::class related 关联模型
+         * user_id ownerKey 当前表关联字段
+         * id relation 关联表字段
+         */
+        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
+
+    public function Merchandise()
+    {
+        /**
+         * Post::class related 关联模型
+         * id foreignKey 当前表关联字段
+         * merchandise_id localKey 关联表字段
+         */
+        return $this->hasOne('App\Models\Merchandise', 'id', 'merchandise_id');
+    }
+
 }

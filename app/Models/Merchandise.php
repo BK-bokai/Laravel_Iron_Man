@@ -23,4 +23,6 @@ class Merchandise extends Model
         'price',
         'remain_count',
     ];
+
+
 }

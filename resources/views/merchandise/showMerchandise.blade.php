@@ -8,7 +8,7 @@
 @section('content')
 <div class="container">
     <h1>{{ $title }}</h1>
-
+    <p class="teal-text"> {{ session('status') }}  <p>
     <table class="table">
         <tr>
             <th>名稱</th>
@@ -34,7 +34,7 @@
         <tr>
         <tr>
             <td colspan="2">
-                <form action="{{route('merchandise_buy',['merchandise_id'=>$Merchandise->id])}}"
+                <form action="{{route('merchandise_buy',['Merchandise'=>$Merchandise->id])}}"
                     method="post">
                     購買數量
                     <select name="buy_count">\

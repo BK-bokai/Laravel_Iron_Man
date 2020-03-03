@@ -23,6 +23,7 @@
         @endphp
         @if ($is_login)
         <a href="{{route('signOut')}}">登出</a>
+        <a href="{{route('trade')}}">購買紀錄</a>
         <a href="{{route('merchandise_home')}}">商品列表</a>
         @if ($is_Admin)
         <a href="{{route('merchandise_manage')}}">商品管理</a>

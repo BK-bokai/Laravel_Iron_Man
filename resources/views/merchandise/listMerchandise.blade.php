@@ -27,12 +27,12 @@
             @foreach($MerchandisePaginate as $Merchandise)
             <tr>
                 <td>
-                    <a href="{{route('merchandise_item',['merchandise_id'=>$Merchandise->id])}}">
+                    <a href="{{route('merchandise_item',['Merchandise'=>$Merchandise->id])}}">
                         {{ $Merchandise->name }}
                     </a>
                 </td>
                 <td>
-                    <a href="{{route('merchandise_item',['merchandise_id'=>$Merchandise->id])}}">
+                    <a href="{{route('merchandise_item',['Merchandise'=>$Merchandise->id])}}">
                         <img class="img_show" src="{{ $Merchandise->photo ?? asset('images/default-merchandise.jpg')}}" />
                     </a>
                 </td>
