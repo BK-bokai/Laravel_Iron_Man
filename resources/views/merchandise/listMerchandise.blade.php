@@ -6,49 +6,38 @@
 
 <!-- 傳送資料到母模板，並指定變數為content -->
 @section('content')
-<style>
-    .img_show {
-        width: 40px;
-        height: 30px;
-    }
-</style>
 <div class="container">
     <h1>{{ $title }}</h1>
-
+    <style>
+        .img_show {
+            width: 40px;
+            height: 30px;
+        }
+    </style>
     <table class="table table-condensed">
         <thead>
             <tr>
-                <th>編號</th>
                 <th>名稱</th>
-                <th>圖片</th>
-                <th>狀態</th>
+                <th>照片</th>
                 <th>價格</th>
                 <th>剩餘數量</th>
-                <th>編輯</th>
             </tr>
         </thead>
         <tbody>
             @foreach($MerchandisePaginate as $Merchandise)
             <tr>
-                <td>{{ $Merchandise->id }}</td>
-                <td>{{ $Merchandise->name }}</td>
                 <td>
-                    <img class="img_show" src="{{ $Merchandise->photo = $Merchandise->photo ?? asset('images/default-merchandise.jpg') }}" />
+                    <a href="{{route('merchandise_item',['merchandise_id'=>$Merchandise->id])}}">
+                        {{ $Merchandise->name }}
+                    </a>
                 </td>
                 <td>
-                    @if($Merchandise->status == 'C')
-                    建立中
-                    @else
-                    可販售
-                    @endif
+                    <a href="{{route('merchandise_item',['merchandise_id'=>$Merchandise->id])}}">
+                        <img class="img_show" src="{{ $Merchandise->photo ?? asset('images/default-merchandise.jpg')}}" />
+                    </a>
                 </td>
                 <td>{{ $Merchandise->price }}</td>
                 <td>{{ $Merchandise->remain_count }}</td>
-                <td>
-                    <a href="{{route('merchandise_edit',['merchandise_id'=>$Merchandise->id])}}">
-                        編輯
-                    </a>
-                </td>
             </tr>
             @endforeach
         </tbody>

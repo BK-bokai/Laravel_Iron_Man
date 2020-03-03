@@ -19,10 +19,15 @@
     <header>
         @php
         $is_login=Session::get('is_login');
+        $is_Admin=Session::get('is_Admin');
         @endphp
         @if ($is_login)
         <a href="{{route('signOut')}}">登出</a>
-        <a href="{{route('merchandise_create')}}">創建商品</a>
+        <a href="{{route('merchandise_home')}}">商品列表</a>
+        @if ($is_Admin)
+        <a href="{{route('merchandise_manage')}}">商品管理</a>
+        <a href="{{route('merchandise_create')}}">新增商品</a>
+        @endif
         @else
         <a href="{{route('do_signUp')}}">註冊</a>
         <a href="{{route('do_signIn')}}">登入</a>

@@ -14,10 +14,19 @@ class MerchandiseController extends Controller
 {
     public function merchandiseListPage(Request $request)
     {
+        $title = '商品列表';
         //每頁資料量
         $row_per_page = 10;
         //撈取商品分業資料
-        $MerchandisePaginate = Merchandise::OrderBy('created_at', 'desc')->where('status','S')->paginate($row_per_page);
+        $MerchandisePaginate = Merchandise::OrderBy('created_at', 'desc')->where('status', 'S')->paginate($row_per_page);
+        if (!is_null($MerchandisePaginate)) {
+            foreach ($MerchandisePaginate as $Merchandise) {
+                if (!is_null($Merchandise)) {
+                    $Merchandise->photo = url($Merchandise->photo);
+                }
+            }
+        }
+        return view('merchandise.listMerchandise', compact('title', 'MerchandisePaginate'));
     }
     public function merchandiseManageListPage(Request $request)
     {
@@ -34,10 +43,19 @@ class MerchandiseController extends Controller
         }
         $title = '商品管理';
 
-        return view('merchandise.manageMerchandise',compact('MerchandisePaginate','title'));
+        return view('merchandise.manageMerchandise', compact('MerchandisePaginate', 'title'));
     }
     public function merchandiseItemPage(Request $request, $merchandise_id)
     {
+        $title = "商品頁";
+        $Merchandise = Merchandise::where('id', $merchandise_id)->first();
+        if (!is_null($Merchandise)) {
+            if (!is_null($Merchandise->photo)) {
+                $Merchandise->photo = url($Merchandise->photo);
+            }
+
+            return view('merchandise.showMerchandise', compact('title', 'Merchandise'));
+        }
         return "你要看的商品ID為$merchandise_id";
     }
     public function merchandiseCreateProcess(Request $request)
@@ -154,5 +172,33 @@ class MerchandiseController extends Controller
             $Merchandise->update($input);
             return redirect(route('merchandise_edit', ['merchandise_id' => $Merchandise->id]));
         }
+    }
+
+    public function merchandiseItemBuyProcess()
+    {
+        //接收輸入資料
+        $input = request()->all();
+        //驗證規則
+        $rules = [
+            //商品購買數量
+            'buy_count' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+        ];
+
+        //驗證規則
+        $validator = Validator::make($input, $rules);
+
+        if ($validator->fails()) {
+            //資料驗證錯誤
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        var_dump($input);
     }
 }
