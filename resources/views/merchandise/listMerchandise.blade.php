@@ -33,7 +33,7 @@
                 </td>
                 <td>
                     <a href="{{route('merchandise_item',['Merchandise'=>$Merchandise->id])}}">
-                        <img class="img_show" src="{{ $Merchandise->photo ?? asset('images/default-merchandise.jpg')}}" />
+                    <img class="img_show" src="{{ $Merchandise->photo = $Merchandise->photo ?? asset('images/default-merchandise.jpg') }}" />
                     </a>
                 </td>
                 <td>{{ $Merchandise->price }}</td>

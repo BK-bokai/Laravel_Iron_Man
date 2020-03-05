@@ -28,11 +28,12 @@ class MerchandiseController extends Controller
         $MerchandisePaginate = Merchandise::OrderBy('created_at', 'desc')->where('status', 'S')->paginate($row_per_page);
         if (!is_null($MerchandisePaginate)) {
             foreach ($MerchandisePaginate as $Merchandise) {
-                if (!is_null($Merchandise)) {
+                if (!is_null($Merchandise->photo)) {
                     $Merchandise->photo = url($Merchandise->photo);
                 }
             }
         }
+        // return $MerchandisePaginate;
         return view('merchandise.listMerchandise', compact('title', 'MerchandisePaginate'));
     }
     public function merchandiseManageListPage(Request $request)
